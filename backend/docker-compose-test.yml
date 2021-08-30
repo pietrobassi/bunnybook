@@ -1,0 +1,27 @@
+version: '3'
+services:
+  cache:
+    image: "redis:6.2-alpine"
+    command: --port 6379
+    ports:
+      - "6381:6379"
+  database:
+    image: "postgres:13.3-alpine"
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=bunny
+      - POSTGRES_USER=bunny
+      - POSTGRES_DB=bunnybook
+  graph:
+    image: "neo4j:4.3.2-community"
+    ports:
+      - "7475:7474"
+      - "7688:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/secret
+  pubsub:
+    image: "redis:6.2-alpine"
+    command: --port 6380
+    ports:
+      - "6382:6380"

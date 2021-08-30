@@ -1,0 +1,2 @@
+class NonExistentChatGroup(Exception):
+    pass

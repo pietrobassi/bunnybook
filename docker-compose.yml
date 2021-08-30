@@ -1,0 +1,73 @@
+version: '3'
+services:
+  backend:
+    build: backend
+    depends_on:
+      - cache
+      - pubsub
+      - database
+      - graph
+    restart: unless-stopped
+    environment:
+      - PORT=8000
+      - MAX_WORKERS=10
+      - POSTGRES_URI=bunny:bunny@database:5432/bunnybook
+      - NEO4J_URI=neo4j://graph:7687
+      - CACHE_URI=redis://cache:6379
+      - PUBSUB_URI=redis://pubsub:6380
+      - AVATAR_DATA_FOLDER=_data/avatar-data
+      - POSTGRES_MIN_POOL_SIZE=1
+      - POSTGRES_MAX_POOL_SIZE=5
+      - JWT_SECRET=secret
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    command: bash -c "python wait_for.py && python init_db.py && uvicorn main:app --host 0.0.0.0 --port 8000 --workers $${MAX_WORKERS}"
+    volumes:
+      - "./_data/avatar-data:/app/_data/avatar-data"
+  cache:
+    image: "redis:6.2-alpine"
+    restart: unless-stopped
+    command: --port 6379
+    expose:
+      - 6379
+    volumes:
+      - "./_data/cache-data:/data"
+  pubsub:
+    image: "redis:6.2-alpine"
+    restart: unless-stopped
+    command: --port 6380
+    expose:
+      - 6380
+    volumes:
+      - "./_data/pubsub-data:/data"
+  database:
+    image: "postgres:13.3-alpine"
+    restart: unless-stopped
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=bunny
+      - POSTGRES_USER=bunny
+      - POSTGRES_DB=bunnybook
+    volumes:
+      - ./_data/postgres-data:/var/lib/postgresql/data
+  frontend:
+    build: "frontend"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+  graph:
+    image: "neo4j:4.3.2-community"
+    restart: unless-stopped
+    expose:
+      - 7474
+      - 7687
+    environment:
+      - NEO4J_AUTH=neo4j/secret
+    volumes:
+      - ./_data/neo4j-data:/data
+

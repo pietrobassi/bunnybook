@@ -1,0 +1,46 @@
+body {
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
+
+.is-clickable {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.is-height-100 {
+  height: 100%;
+}
+
+.has-visibility-visible {
+  visibility: visible;
+}
+
+.has-visibility-hidden {
+  visibility: hidden;
+}
+
+.has-pointer-events-all {
+  pointer-events: all;
+}
+
+.has-pointer-events-none {
+  pointer-events: none;
+}
+
+.underline-on-hover:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.is-unselectable {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}

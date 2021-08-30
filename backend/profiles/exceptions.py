@@ -1,0 +1,2 @@
+class UnexpectedRelationshipState(Exception):
+    pass
