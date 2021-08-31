@@ -109,8 +109,14 @@ For PostgreSQL access, SQLAlchemy have been used asynchronously in "Core" mode; 
 PostgreSQL connection pooling via pgbouncer is currently not used since encode/databases under the hood creates an asyncpg-managed connection pool; in order to increase scalability, a NullPool-like pool object should be used, overriding current encode/databases PostgreSQL backend adapter implementation.  
 In addition, PostgreSQL "pg_trgm" module as well as "gin" indexes have been added to speed up text search queries.
 
+#### Dependency Injection
+I made large use of dependency injection techniques both in frontend (microsoft/tsyringe) and backend (injector), where I extended standard FastAPI DI framework to make it compatible with "injector" package using a small utility function. Although some people might consider the extensive use of DI in Python an overkill since you have module imports, I still prefer to use it to have better control over instances initialization, easier testing and clearer dependency graph.
+
 #### Frontend
 RxJs stores have been chosen to manage state on the frontend. Coming from an Angular 2+ background, I have experience with Reactive Programming and I love working with RxJs since I think it is a really great tool to solve frontend state management issues, so I came up with a custom implementation of Angular services layer, leveraging RxJs stores + microsoft/tsyringe Dependency Injection framework. I had a great experience with this combo and I think I will reuse it for future projects. I like (and worked with) Redux / ReduxToolkit as well, but for small-to-medium sized projects I prefer the RxJs solution a little bit more since it feels more lightweight to me, also because including RxJs in the project allows me to use all its features for other tasks (not only state management).
+
+#### Model
+Backend model layer is made of pydantic classes, following the Anemic Domain Model pattern. Pydantic is a great way to represent domain model, ensuring continuous data validation and enforcing type hints at runtime. Regarding Anemic Domain Model, some people consider it an "anti-pattern": I respectfully disagree. Both Rich Domain Model and Anemic Domain Model have their reason to exist, what really matters is knowing why you are choosing one over the other and being aware of the pros/cons of each conceptual model.
 
 ## Development ideas and open issues
 - implement "Likes" feature
