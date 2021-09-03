@@ -90,7 +90,8 @@ This command brings up a new clean docker-compose environment (with services map
 ## Architectural considerations
 #### Authentication
 Authentication is performed via JWT access tokens + JWT refresh tokens (which are rotated at every refresh and stored in the database in order to allow session banning): with appropriate secret-sharing mechanisms, this configuration prevents the need for backend services to call a stateful user session holder (e.g. Redis) on every API call.  
-Access tokens are saved in localStorage whilst refresh token are stored inside secure, HTTP only cookies.
+Access tokens are saved in localStorage whilst refresh token are stored inside secure, HTTP only cookies.  
+Saving access tokens in localStorage is not ideal since it exposes them to XSS attacks, but this choice comes from early stages of development where I wanted to use the same access token to authenticate both API calls and websocket connections and I was leveraging a websocket library that wasn't able to read Cookies inside "on connect" event handler; now, since Socket.IO can access them, a nice and easy fix would be to store access tokens in secure Cookies as well.
 
 #### Caching
 There are 2 Redis instances - one for chat/notifications and one for caching - in order not to have a single point of failure: a crash of cache backend shouldn't affect messaging! This is also the reason why backend code ignores failed cache calls (it just logs them) and goes on querying PostgreSQL/Neo4j to preserve Bunnybook functionality.  
@@ -123,6 +124,7 @@ Backend model layer is made of pydantic classes, following the Anemic Domain Mod
 - cache notifications and chat messages
 - reimplement chat database schema to use a more "modern" approach, in order to leverage PostgreSQL 9.6+ recursive queries
 - rate limit Socket.IO events
+- store JWT access tokens the same way as JWT refresh tokens (secure + HTTP only + same site Cookies)
 - take countermeasures against cache stampede (e.g. through locking)
 - improve "RESTfulness" of profiles API
 - better frontend error handling
