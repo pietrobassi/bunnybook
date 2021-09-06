@@ -2,7 +2,7 @@
 
 ## A tiny social network (for bunnies), built with FastAPI and React+RxJs.
 
-## [Click here for live demo!](http://137.184.46.182)
+## [Click here for live demo!](http://bunnybook.ddns.net)
 
 <kbd>
   <img src="https://user-images.githubusercontent.com/19171248/131324206-1f97c51b-7192-4e62-8619-abde46aea5b6.png"/>
